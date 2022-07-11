@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
@@ -146,6 +147,15 @@ REST_FRAMEWORK = {
 ##################################################################
 
 AUTH_USER_MODEL = 'users.User'
+
+##################################################################
+# Custom Simple JWT settings
+##################################################################
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+}
 
 ##################################################################
 # Default auto field settings
