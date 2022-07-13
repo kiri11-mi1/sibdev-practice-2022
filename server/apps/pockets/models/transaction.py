@@ -2,12 +2,13 @@ from decimal import Decimal
 
 from django.core.validators import MinValueValidator
 from django.db import models
+from django_lifecycle import LifecycleModelMixin, hook, AFTER_CREATE, BEFORE_SAVE
 
 from .managers import TransactionManager
 from ..constants import TransactionTypes
 
 
-class Transaction(models.Model):
+class Transaction(LifecycleModelMixin, models.Model):
     transaction_type = models.CharField(
         max_length=7,
         choices=TransactionTypes.CHOICES,
@@ -25,6 +26,7 @@ class Transaction(models.Model):
         related_name='transactions',
         verbose_name='Категория',
         null=True,
+        blank=True,
     )
     transaction_date = models.DateField(
         verbose_name='Дата операции',
@@ -44,3 +46,8 @@ class Transaction(models.Model):
 
     def __str__(self) -> str:
         return f'{self.amount} {TransactionTypes.CHOICES_DICT[self.transaction_type]}'
+
+    @hook(BEFORE_SAVE, when='category')
+    def validate_transaction_by_type(self):
+        if self.transaction_type == TransactionTypes.INCOME:
+            self.category = None
