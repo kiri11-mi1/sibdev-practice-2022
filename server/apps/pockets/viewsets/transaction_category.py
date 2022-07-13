@@ -1,6 +1,7 @@
 from typing import Type
 
 from django.db.models import QuerySet
+from rest_framework import mixins
 from rest_framework import viewsets, serializers
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -14,7 +15,7 @@ from ..serializers import (
 )
 
 
-class TransactionCategoryViewSet(viewsets.ModelViewSet):
+class TransactionCategoryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self) -> Type[serializers.ModelSerializer]:
