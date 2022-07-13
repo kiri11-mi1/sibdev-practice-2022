@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from django.core.validators import MinValueValidator
 from django.db import models
-from django_lifecycle import LifecycleModelMixin, hook, AFTER_CREATE, BEFORE_SAVE
+from django_lifecycle import LifecycleModelMixin, hook, BEFORE_SAVE
 
 from .managers import TransactionManager
 from ..constants import TransactionTypes
