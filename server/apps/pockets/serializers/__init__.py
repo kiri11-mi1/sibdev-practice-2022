@@ -3,7 +3,4 @@ from .transaction import (
     TransactionRetrieveSerializer,
     TransactionGlobalSerializer,
 )
-from .transaction_category import (
-    TransactionCategorySerializer,
-    TransactionCategoryTransactionSumSerializer,
-)
+from .transaction_category import TransactionCategorySerializer, TransactionCategoryTransactionSumSerializer
