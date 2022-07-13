@@ -12,7 +12,7 @@ class TransactionRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ('id', 'category', 'transaction_date', 'amount')
+        fields = ('id', 'category', 'transaction_date', 'amount', 'transaction_type',)
 
 
 class TransactionCreateSerializer(serializers.ModelSerializer):
@@ -20,7 +20,7 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ('id', 'category', 'transaction_date', 'amount')
+        fields = ('id', 'category', 'transaction_date', 'amount', 'transaction_type',)
 
     def validate_category(self, category: TransactionCategory) -> TransactionCategory:
         user = self.context['request'].user
