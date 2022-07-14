@@ -14,4 +14,4 @@ class TransactionFilter(filters.FilterSet):
 
     class Meta:
         model = Transaction
-        fields = ['ordering',]
+        fields = ['ordering']
