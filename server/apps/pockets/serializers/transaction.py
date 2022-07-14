@@ -46,3 +46,7 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
 class TransactionGlobalSerializer(serializers.Serializer):
     total_income = serializers.DecimalField(max_digits=12, decimal_places=2)
     total_expenses = serializers.DecimalField(max_digits=12, decimal_places=2)
+
+
+class TransactionBalanceSerializer(serializers.Serializer):
+    balance = serializers.DecimalField(max_digits=12, decimal_places=2)
