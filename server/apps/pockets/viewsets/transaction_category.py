@@ -25,12 +25,19 @@ class TransactionCategoryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,
         return TransactionCategorySerializer
 
     def get_queryset(self) -> QuerySet:
-        return TransactionCategory.objects.filter(
+        queryset = TransactionCategory.objects.filter(
             user=self.request.user,
         ).annotate_with_transaction_sums().order_by(
             '-transactions_sum',
         )
+        if self.action == 'top':
+            queryset = queryset[:3]
+        return queryset
 
     @action(methods=('GET',), detail=False)
     def expenses(self, request: Request, *args, **kwargs) -> Response:
+        return super().list(request, *args, **kwargs)
+
+    @action(methods=('GET',), detail=False)
+    def top(self, request: Request, *args, **kwargs) -> Response:
         return super().list(request, *args, **kwargs)
