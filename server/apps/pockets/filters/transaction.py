@@ -4,7 +4,6 @@ from ..models import Transaction
 
 
 class TransactionFilter(filters.FilterSet):
-    date = filters.DateFilter(field_name='transaction_date')
     ordering = OrderingFilter(
         fields=(
             ('transaction_date', 'date'),
@@ -15,4 +14,4 @@ class TransactionFilter(filters.FilterSet):
 
     class Meta:
         model = Transaction
-        fields = ['date']
+        fields = ['ordering',]
