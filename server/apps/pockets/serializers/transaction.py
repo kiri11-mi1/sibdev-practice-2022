@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from rest_framework import serializers
 
-from ..constants import TransactionErrors
+from ..constants import TransactionErrors, TransactionTypes
 from ..models import Transaction, TransactionCategory
 from .transaction_category import TransactionCategorySerializer
 
@@ -16,7 +16,7 @@ class TransactionRetrieveSerializer(serializers.ModelSerializer):
 
 
 class TransactionCreateSerializer(serializers.ModelSerializer):
-    category = serializers.PrimaryKeyRelatedField(queryset=TransactionCategory.objects.all())
+    category = serializers.PrimaryKeyRelatedField(queryset=TransactionCategory.objects.all(), required=False)
 
     class Meta:
         model = Transaction
@@ -24,13 +24,20 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
 
     def validate_category(self, category: TransactionCategory) -> TransactionCategory:
         user = self.context['request'].user
+        transaction_type = self.context['request'].data.get('transaction_type')
+        if transaction_type == TransactionTypes.EXPENSE:
+            if not category:
+                raise serializers.ValidationError(TransactionErrors.NEEDED_CATEGORY)
+            elif category not in user.categories.all():
+                raise serializers.ValidationError(TransactionErrors.NOT_USERS_CATEGORY)
 
-        if category not in user.categories.all():
-            raise serializers.ValidationError(TransactionErrors.NOT_USERS_CATEGORY)
-        else:
-            return category
+        elif transaction_type == TransactionTypes.INCOME and category:
+            raise serializers.ValidationError(TransactionErrors.CATEGORY_NOT_ALLOWED)
+
+        return category
 
     def create(self, validated_data: dict) -> Transaction:
+        validated_data['category'] = self.validate_category(validated_data.get('category'))
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
 
