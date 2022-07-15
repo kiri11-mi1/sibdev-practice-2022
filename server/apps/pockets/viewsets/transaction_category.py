@@ -34,10 +34,10 @@ class TransactionCategoryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,
             queryset = queryset[:3]
         return queryset
 
-    @action(methods=('GET',), detail=False)
+    @action(methods=('GET',), detail=False, url_path='expenses-by-categories')
     def expenses(self, request: Request, *args, **kwargs) -> Response:
         return super().list(request, *args, **kwargs)
 
-    @action(methods=('GET',), detail=False)
+    @action(methods=('GET',), detail=False, url_path='top-three-categories')
     def top(self, request: Request, *args, **kwargs) -> Response:
         return super().list(request, *args, **kwargs)
