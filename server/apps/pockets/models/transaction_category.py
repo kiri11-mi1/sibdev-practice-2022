@@ -23,4 +23,4 @@ class TransactionCategory(models.Model):
         unique_together = [['user', 'name']]
 
     def __str__(self) -> str:
-        return f'{self.name}'
+        return f'{self.name} - {self.user.username}'
