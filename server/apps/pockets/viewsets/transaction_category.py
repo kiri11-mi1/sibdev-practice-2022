@@ -42,13 +42,18 @@ class TransactionCategoryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,
 
         return queryset
 
+    def get_object(self):
+        if self.action == 'top':
+            top_three_categories_data = self.get_serializer(self.get_queryset()[:TOP_THREE], many=True).data
+            other_categories_data = [{'other': self.get_serializer(self.get_queryset()[TOP_THREE:], many=True).data}]
+            return top_three_categories_data + other_categories_data
+        else:
+            return super().get_object()
+
     @action(methods=('GET',), detail=False, url_path='expenses-by-categories')
     def expenses(self, request: Request, *args, **kwargs) -> Response:
         return super().list(request, *args, **kwargs)
 
     @action(methods=('GET',), detail=False, url_path='top-three-categories')
     def top(self, request: Request) -> Response:
-        queryset = self.get_queryset()
-        top_three_categories_data = self.get_serializer(queryset[:TOP_THREE], many=True).data
-        other_categories_data = [{'other': self.get_serializer(queryset[TOP_THREE:], many=True).data}]
-        return Response(top_three_categories_data+other_categories_data, status=status.HTTP_200_OK)
+        return Response(self.get_object(), status=status.HTTP_200_OK)
