@@ -25,6 +25,7 @@ class Transaction(models.Model):
         related_name='transactions',
         verbose_name='Категория',
         null=True,
+        default=None,
     )
     transaction_date = models.DateField(
         verbose_name='Дата операции',
