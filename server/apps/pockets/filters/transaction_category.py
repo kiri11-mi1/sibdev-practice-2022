@@ -1,10 +1,11 @@
 from django_filters import rest_framework as filters
-from ..models import TransactionCategory
+from ..models import TransactionCategory, Transaction
 
 
 class TransactionCategoryFilter(filters.FilterSet):
-    date = filters.DateFilter(field_name='transactions__transaction_date')
+    month = filters.NumberFilter(field_name='transactions__transaction_date__month')
+    year = filters.NumberFilter(field_name='transactions__transaction_date__year')
 
     class Meta:
         model = TransactionCategory
-        fields = ['date']
+        fields = ['month', 'year']
