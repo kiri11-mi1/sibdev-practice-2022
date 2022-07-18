@@ -53,9 +53,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
     def get_object(self) -> Union[Transaction, dict[str, Decimal]]:
         if self.action == 'total':
-            current_month = timezone.now().month
-            queryset = self.get_queryset().filter(transaction_date__month=current_month)
-            obj = self.filter_queryset(queryset).aggregate_totals()
+            obj = self.filter_queryset(self.get_queryset()).aggregate_totals()
         elif self.action == 'balance':
             obj = self.get_queryset().aggregate_balance()
         else:

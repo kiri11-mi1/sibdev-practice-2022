@@ -4,6 +4,9 @@ from ..models import Transaction
 
 
 class TransactionFilter(filters.FilterSet):
+    year = filters.NumberFilter(field_name='transaction_date__year')
+    month = filters.NumberFilter(field_name='transaction_date__month')
+
     ordering = OrderingFilter(
         fields=(
             ('transaction_date', 'date'),
@@ -14,4 +17,4 @@ class TransactionFilter(filters.FilterSet):
 
     class Meta:
         model = Transaction
-        fields = ['ordering']
+        fields = ['ordering', 'year', 'month']
