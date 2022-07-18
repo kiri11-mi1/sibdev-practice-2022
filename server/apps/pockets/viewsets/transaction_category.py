@@ -11,7 +11,12 @@ from rest_framework.response import Response
 
 from ..filters import TransactionCategoryFilter
 from ..models import TransactionCategory
-from ..serializers import TransactionCategorySerializer, TransactionCategoryTransactionSumSerializer, TopOfCategoriesSerializer
+from ..serializers import (
+    TransactionCategorySerializer,
+    TransactionCategoryTransactionSumSerializer,
+    TopCategoriesSerializer,
+)
+from ..constants import TOP_THREE
 
 
 class TransactionCategoryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
@@ -24,7 +29,7 @@ class TransactionCategoryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,
         if self.action == 'expenses':
             serializer_class = TransactionCategoryTransactionSumSerializer
         if self.action == 'top':
-            serializer_class = TopOfCategoriesSerializer
+            serializer_class = TopCategoriesSerializer
 
         return serializer_class
 
@@ -44,6 +49,6 @@ class TransactionCategoryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,
     @action(methods=('GET',), detail=False, url_path='top-three-categories')
     def top(self, request: Request) -> Response:
         queryset = self.get_queryset()
-        top_three_categories_data = self.get_serializer(queryset[:3], many=True).data
-        other_categories_data = [{'other': self.get_serializer(queryset[3:], many=True).data}]
+        top_three_categories_data = self.get_serializer(queryset[:TOP_THREE], many=True).data
+        other_categories_data = [{'other': self.get_serializer(queryset[TOP_THREE:], many=True).data}]
         return Response(top_three_categories_data+other_categories_data, status=status.HTTP_200_OK)
