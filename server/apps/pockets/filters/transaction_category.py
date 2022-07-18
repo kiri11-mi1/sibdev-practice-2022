@@ -8,4 +8,4 @@ class TransactionCategoryFilter(filters.FilterSet):
 
     class Meta:
         model = TransactionCategory
-        fields = ['month', 'year']
+        fields = ('month', 'year')
