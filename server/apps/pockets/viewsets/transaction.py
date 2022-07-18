@@ -31,7 +31,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self) -> Type[serializers.ModelSerializer]:
         if self.action == 'total':
             serializer_class = TransactionGlobalSerializer
-        elif self.action in {'create', 'update', 'partial_update'}:
+        elif self.action in ('create', 'update', 'partial_update'):
             serializer_class = TransactionCreateSerializer
         elif self.action == 'balance':
             serializer_class = TransactionBalanceSerializer
