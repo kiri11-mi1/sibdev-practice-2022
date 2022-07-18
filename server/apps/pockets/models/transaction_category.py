@@ -20,7 +20,7 @@ class TransactionCategory(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
-        unique_together = [['user', 'name']]
+        unique_together = ['user', 'name']
 
     def __str__(self) -> str:
         return f'{self.name} - {self.user.username}'
