@@ -26,13 +26,3 @@ class TransactionQuerySet(QuerySet):
                 output_field=DecimalField(),
             ),
         )
-
-    def aggregate_balance(self) -> dict[str, Decimal]:
-        return self.aggregate(
-            balance=Coalesce(
-                Sum('amount', filter=Q(transaction_type=TransactionTypes.INCOME)) - \
-                Sum('amount', filter=Q(transaction_type=TransactionTypes.EXPENSE)),
-                0,
-                output_field=DecimalField(),
-            ),
-        )

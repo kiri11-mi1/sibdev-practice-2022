@@ -55,7 +55,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
         if self.action == 'total':
             obj = self.filter_queryset(self.get_queryset()).aggregate_totals()
         elif self.action == 'balance':
-            obj = self.get_queryset().aggregate_balance()
+            totals = self.filter_queryset(self.get_queryset()).aggregate_totals()
+            obj = {'balance': totals['total_income'] - totals['total_expenses']}
         else:
             obj = super().get_object()
 
