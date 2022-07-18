@@ -26,3 +26,9 @@ class TransactionQuerySet(QuerySet):
                 output_field=DecimalField(),
             ),
         )
+
+    def aggregate_balance(self) -> dict[str, Decimal]:
+        totals = self.aggregate_totals()
+        return {
+            'balance': totals['total_income'] - totals['total_expenses']
+        }
