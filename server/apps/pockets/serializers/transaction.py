@@ -22,9 +22,9 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = ('id', 'category', 'transaction_date', 'amount', 'transaction_type',)
 
-    def validate(self, attrs):
-        transaction_type = attrs.get('transaction_type')
-        category = attrs.get('category')
+    def validate(self, data) -> OrderedDict:
+        transaction_type = data.get('transaction_type')
+        category = data.get('category')
 
         if transaction_type == TransactionTypes.EXPENSE and not category:
             raise serializers.ValidationError(TransactionErrors.NEEDED_CATEGORY)
@@ -32,7 +32,7 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
         elif transaction_type == TransactionTypes.INCOME and category:
             raise serializers.ValidationError(TransactionErrors.CATEGORY_NOT_ALLOWED)
 
-        return attrs
+        return data
 
     def validate_category(self, category: TransactionCategory) -> TransactionCategory:
         user = self.context['request'].user
