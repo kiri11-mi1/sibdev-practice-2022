@@ -22,19 +22,25 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = ('id', 'category', 'transaction_date', 'amount', 'transaction_type',)
 
-    def validate_category(self, category: TransactionCategory) -> TransactionCategory:
-        user = self.context['request'].user
-        transaction_type = self.context['request'].data.get('transaction_type')
-        if transaction_type == TransactionTypes.EXPENSE:
-            if not category:
-                raise serializers.ValidationError(TransactionErrors.NEEDED_CATEGORY)
-            elif category not in user.categories.all():
-                raise serializers.ValidationError(TransactionErrors.NOT_USERS_CATEGORY)
+    def validate(self, attrs):
+        transaction_type = attrs.get('transaction_type')
+        category = attrs.get('category')
+
+        if transaction_type == TransactionTypes.EXPENSE and not category:
+            raise serializers.ValidationError(TransactionErrors.NEEDED_CATEGORY)
 
         elif transaction_type == TransactionTypes.INCOME and category:
             raise serializers.ValidationError(TransactionErrors.CATEGORY_NOT_ALLOWED)
 
-        return category
+        return attrs
+
+    def validate_category(self, category: TransactionCategory) -> TransactionCategory:
+        user = self.context['request'].user
+
+        if category and category not in user.categories.all():
+            raise serializers.ValidationError(TransactionErrors.NOT_USERS_CATEGORY)
+        else:
+            return category
 
     def create(self, validated_data: dict) -> Transaction:
         validated_data['category'] = self.validate_category(validated_data.get('category'))
