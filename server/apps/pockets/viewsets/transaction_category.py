@@ -1,6 +1,6 @@
 from typing import Type
 
-from django.db.models import QuerySet, Sum
+from django.db.models import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status
 from rest_framework import viewsets, serializers
@@ -44,17 +44,8 @@ class TransactionCategoryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,
 
     def get_object(self):
         if self.action == 'top':
-            top_three_categories_data = self.get_serializer(
-                self.get_queryset()[:TOP_CATEGORIES],
-                many=True
-            ).data
-
-            other_categories_data = [
-                self.get_serializer(
-                    self.get_queryset()[TOP_CATEGORIES:].aggregate_other_categories()
-                ).data
-            ]
-            return top_three_categories_data + other_categories_data
+            queryset = self.get_queryset().aggregate_top_categories()
+            return self.get_serializer(queryset, many=True).data
         else:
             return super().get_object()
 

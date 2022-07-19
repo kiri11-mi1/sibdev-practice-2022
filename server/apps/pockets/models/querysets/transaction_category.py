@@ -1,7 +1,7 @@
 from django.db.models import QuerySet, Sum, DecimalField
 from django.db.models.functions import Coalesce
 
-from apps.pockets.constants import TOP_THREE
+from apps.pockets.constants import TOP_CATEGORIES
 
 
 class TransactionCategoryQuerySet(QuerySet):
@@ -18,10 +18,12 @@ class TransactionCategoryQuerySet(QuerySet):
             ),
         )
 
-    def aggregate_other_categories(self):
-        return {
+    def aggregate_top_categories(self):
+        top_categories_data = list(self[:TOP_CATEGORIES].values())
+        other_categories_data = [{
             'name': 'Другое',
-            'transactions_sum': self.aggregate(
+            'transactions_sum': self[TOP_CATEGORIES:].aggregate(
                 Sum('transactions_sum')
             )['transactions_sum__sum']
-        }
+        }]
+        return top_categories_data + other_categories_data
