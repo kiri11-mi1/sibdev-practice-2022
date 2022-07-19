@@ -19,11 +19,13 @@ class TransactionCategoryQuerySet(QuerySet):
         )
 
     def aggregate_top_categories(self):
-        top_categories_data = list(self[:TOP_CATEGORIES].values())
-        other_categories_data = [{
-            'name': 'Другое',
-            'transactions_sum': self[TOP_CATEGORIES:].aggregate(
-                Sum('transactions_sum')
-            )['transactions_sum__sum']
-        }]
-        return top_categories_data + other_categories_data
+        top_categories = list(self[:TOP_CATEGORIES].values())
+        top_categories.append(
+            {
+                'name': 'Другое',
+                'transactions_sum': self[TOP_CATEGORIES:].aggregate(
+                    Sum('transactions_sum')
+                )['transactions_sum__sum']
+            }
+        )
+        return top_categories
