@@ -16,7 +16,7 @@ from ..serializers import (
     TransactionCategoryTransactionSumSerializer,
     TopCategoriesSerializer,
 )
-from ..constants import TOP_THREE
+from ..constants import TOP_CATEGORIES
 
 
 class TransactionCategoryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
@@ -44,10 +44,16 @@ class TransactionCategoryViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,
 
     def get_object(self):
         if self.action == 'top':
-            top_three_categories_data = self.get_serializer(self.get_queryset()[:TOP_THREE], many=True).data
-            other_categories_data = [self.get_serializer(
-                self.get_queryset()[TOP_THREE:].aggregate_other_categories()
-            ).data]
+            top_three_categories_data = self.get_serializer(
+                self.get_queryset()[:TOP_CATEGORIES],
+                many=True
+            ).data
+
+            other_categories_data = [
+                self.get_serializer(
+                    self.get_queryset()[TOP_CATEGORIES:].aggregate_other_categories()
+                ).data
+            ]
             return top_three_categories_data + other_categories_data
         else:
             return super().get_object()

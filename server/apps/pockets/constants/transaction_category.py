@@ -1,1 +1,1 @@
-TOP_THREE: int = 3
+TOP_CATEGORIES: int = 3
